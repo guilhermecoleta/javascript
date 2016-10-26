@@ -3,23 +3,35 @@
 
   angular.module('jobs').controller('UserController', controller);
 
-  controller.$inject = [];
+  controller.$inject = ['UserService'];
 
-  function controller() {
+  function controller(UserService) {
     const vm = this;
 
     vm.initUsers = () => {
-      vm.users = [];
+      UserService.getUsers()
+      .then(response => {
+        console.log(response)
+        vm.users = response.data;
+      })
     };
 
     vm.save = (user) => {
-      vm.users.push(user);
-      vm.user = {};
+      UserService.saveUser(user)
+      .then((res) => {
+        console.log(res);
+        vm.user = {};
+        vm.initUsers();
+      })
+      .catch((err) => {
+        console.log(err);
+      })
     };
 
     vm.deleteSelected = (users) => {
-      vm.users = users.filter((user) => {
-        return !user.selected
+      UserService.removeAll(users)
+      .then((res) => {
+
       });
     };
   }
